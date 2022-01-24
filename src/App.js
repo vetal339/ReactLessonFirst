@@ -10,29 +10,15 @@ import PostForm from "./components/PostForm";
 import MySelect from "./components/UI/select/MySelect";
 import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/MyModal/MyModal";
+import {usePosts} from "./hooks/usePosts";
+
 
 
 function App() {
-    const [posts, setPosts] = useState([
-        {id: 1, title: 'aaaa', body: '123'},
-        {id: 2, title: 'vvvv 2', body: '666'},
-        {id: 3, title: 'bbbb 3', body: '12222222'}
-    ])
+    const [posts, setPosts] = useState([])
     const [filter, setFilter] = useState({sort: '', query: ''})
     const [modal, setModal] = useState(false);
-
-
-    const sortedPosts = useMemo(() =>{
-        console.log('ФУНКЦИЯ СОРТЕД ПОСТ ОТРАБОТАЛА')
-        if (filter.sort){
-            return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]))
-        }
-        return posts;
-    }, [filter.sort, posts]);
-
-    const sortedAndSearchedPosts = useMemo(()=>{
-        return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query.toLowerCase()))
-    }, [filter.query,sortedPosts])
+    const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
 
     const removePost = (post) => {
         setPosts(posts.filter(p => p.id !== post.id))
@@ -42,8 +28,6 @@ function App() {
         setPosts([...posts, newPost])
         setModal(false)
     }
-
-
 
   return (
     <div className="App">
